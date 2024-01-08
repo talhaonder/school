@@ -1,56 +1,34 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button } from 'react-native';
+import TeacherService from '../../api'; // api.js dosyanızın yolunu düzenleyin
 
-export default function horizontalScroll() {
-    return (
-        <View style={styles.secondscd}>
-            <TouchableOpacity
-                onPress={() => handleDayPress(item)}
-                style={styles.horizontalScroll}
-            >
-                <Image source={require('../../assets/indir.jpeg')} style={{ height: 44, width: 44 }} />
-                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>pazartesi</Text>
-                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>29&#176;</Text>
-                <Text style={{ color: 'white', fontSize: 12 }}>15:30</Text>
+const HorizontalScroll = () => {
+  const [teachers, setTeachers] = useState([]);
 
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => handleDayPress(item)}
-                style={styles.horizontalScroll}
-            >
-                <Image source={require('../../assets/indir.jpeg')} style={{ height: 44, width: 44 }} />
-                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>pazartesi</Text>
-                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>29&#176;</Text>
-                <Text style={{ color: 'white', fontSize: 12 }}>15:30</Text>
+  useEffect(() => {
+    TeacherService.getAllTeachers()
+      .then((response) => setTeachers(response.data))
+      .catch((error) => console.error('Error fetching teachers', error));
+  }, []);
 
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => handleDayPress(item)}
-                style={styles.horizontalScroll}
-            >
-                <Image source={require('../../assets/indir.jpeg')} style={{ height: 44, width: 44 }} />
-                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>pazartesi</Text>
-                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>29&#176;</Text>
-                <Text style={{ color: 'white', fontSize: 12 }}>15:30</Text>
+  const handleAddTeacher = () => {
+    TeacherService.addTeacher('Yeni Öğretmen')
+      .then((response) => {
+        setTeachers([...teachers, response.data]);
+      })
+      .catch((error) => console.error('Error adding teacher', error));
+  };;
 
-            </TouchableOpacity>
+  return (
+    <View>
+      {teachers.map((teacher) => (
+        <View key={teacher._id}>
+          <Text>{teacher.name}</Text>
         </View>
+      ))}
+      <Button title="Add Teacher" onPress={handleAddTeacher} />
+    </View>
+  );
+};
 
-    )
-}
-const styles = StyleSheet.create({
-    horizontalScroll: {
-        flex: 1,
-        margin: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 100,
-        height: 150,  // İlgili kısım: Elemanların yüksekliğini artırabilirsiniz.
-        borderRadius: 25,
-        marginBottom: 1,
-      },
-      secondscd: {
-        display: "flex",
-        flexDirection: "row",
-      },
-})
+export default HorizontalScroll;

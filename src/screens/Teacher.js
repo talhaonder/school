@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import { StatusBar } from 'expo-status-bar';
 import HorizontalScroll from './HorizontalScroll';
+import Student from './Student';
+
 export default function Teacher() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
@@ -18,42 +20,52 @@ export default function Teacher() {
     return () => clearTimeout(delay);
   }, []);
 
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar />
-      <Image blurRadius={12} source={require('../../assets/indir.jpeg')} style={{ position: 'absolute', height: '100%', width: '100%' }} />
-      {loading ? (
+      <Image
+        blurRadius={12}
+        source={require('../../assets/indir.jpeg')}
+        style={{ position: 'absolute', height: '100%', width: '100%' }}
+      />
+        {loading ? (
         <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
           <Progress.CircleSnail thickness={10} size={140} color={"#0bb3b2"} />
         </View>
       ) : (
-        <SafeAreaView style={styles.container}>
-          <View style={styles.first}>
-            <View style={styles.firstsc}>
-
-            </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.first}>
+          <View style={styles.firstsc}>
+            {/* firstsc içindeki buton */}
+            <TouchableOpacity style={styles.buttons} onPress={() => navigation.navigate('Student',)}>
+            </TouchableOpacity>
           </View>
-          <View style={styles.second}>
-            <View style={styles.secondfirst}>
-
-            </View>
-            <View style={styles.secondscd}>
-              <ScrollView
-                keyboardShouldPersistTaps="always"
-                horizontal
-                contentContainerStyle={{ paddingHorizontal: 15 }}
-                showsHorizontalScrollIndicator={false}
-              >
-                <HorizontalScroll/>
-              </ScrollView>
-            </View>
+        </View>
+        <View style={styles.second}>
+          <View style={styles.secondfirst}></View>
+          <View style={styles.secondscd}>
+            {/* HorizontalScroll yerine doğrudan içeriği ekleyin */}
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                flexDirection: 'row',
+              }}
+              horizontal
+            >
+              {/* İçerik buraya ekleyin */}
+              <TouchableOpacity>
+                <Text>Horizontal Content</Text>
+              </TouchableOpacity>
+              {/* İçerik eklemeye devam edin */}
+            </ScrollView>
           </View>
-        </SafeAreaView>
+        </View>
+      </SafeAreaView>
       )}
     </View>
-  )
+  );
 }
+
 
 const styles = StyleSheet.create({
   container: {
