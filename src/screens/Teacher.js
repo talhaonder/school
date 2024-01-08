@@ -14,7 +14,7 @@ export default function Teacher() {
     // Simulate a 3-second delay before showing the main content
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1000);
 
     // Clear the timeout when the component unmounts or when loading is complete
     return () => clearTimeout(delay);
