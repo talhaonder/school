@@ -1,53 +1,73 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import SideMenu from 'react-native-side-menu';
+import { getTeachers, getClasses } from '../../components/index';
 
-class ContentView extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
+const teachers = getTeachers();
+const classes = getClasses();
+
+const ContentView = ({ selectedTeacher }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.welcome}>
+        Welcome to React Native!
+      </Text>
+      <Text style={styles.instructions}>
+        To get started, edit index.ios.js
+      </Text>
+      <Text style={styles.instructions}>
+        Press Cmd+R to reload,{'\n'}
+        Cmd+Control+Z for dev menu
+      </Text>
+      {selectedTeacher && (
+        <Text style={styles.teacherInfo}>
+          Selected Teacher: {selectedTeacher.name}
         </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+Control+Z for dev menu
-        </Text>
-      </View>
+      )}
+    </View>
+  );
+};
+
+const TeacherMenu = () => {
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+
+  const handleMenuItemClick = (teacher) => {
+    setSelectedTeacher(teacher);
+
+    // Seçilen öğretmenin sınıflarını göster
+    const teacherClasses = classes.filter((cls) => cls.teacherId === teacher.id);
+    const classList = teacherClasses.map((cls) => cls.name).join(', ');
+
+    Alert.alert(
+      `Classes for ${teacher.name}`,
+      classList || 'No classes available.',
     );
-  }
-}
+  };
 
-class Menu extends React.Component {
-  render() {
-    return (
-      <View style={styles.menuContainer}>
-        <TouchableOpacity onPress={() => alert('Menu item clicked')}>
-          <Text style={styles.menuItem}>Menu Item 1</Text>
+  return (
+    <View style={styles.menuContainer}>
+      {teachers.map((teacher) => (
+        <TouchableOpacity key={teacher.id} onPress={() => handleMenuItemClick(teacher)}>
+          <Text style={styles.menuItem}>{teacher.name}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => alert('Menu item clicked')}>
-          <Text style={styles.menuItem}>Menu Item 2</Text>
-        </TouchableOpacity>
-        {/* Ek menu öğelerini buraya ekleyebilirsiniz */}
-      </View>
-    );
-  }
-}
+      ))}
+    </View>
+  );
+};
 
-class Application extends React.Component {
-  render() {
-    const menu = <Menu />;
- 
-    return (
-      <SideMenu menu={menu}>
-        <ContentView />
-      </SideMenu>
-    );
-  }
-}
+const Menu = () => {
+  return <TeacherMenu />;
+};
+
+const Application = () => {
+  const menu = <Menu />;
+
+  return (
+    <SideMenu menu={menu}>
+      <ContentView selectedTeacher={null} />
+    </SideMenu>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -77,6 +97,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  teacherInfo: {
+    marginTop: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

@@ -1,0 +1,14 @@
+{
+  "teachers": [
+    { "id": 1, "name": "John Doe" },
+    { "id": 2, "name": "Jane Smith" },
+    { "id": 3, "name": "Michael Johnson" }
+  ],
+  "classes": [
+    { "id": 101, "name": "Class A", "teacherId": 1 },
+    { "id": 102, "name": "Class B", "teacherId": 2 },
+    { "id": 103, "name": "Class C", "teacherId": 3 },
+    { "id": 104, "name": "Class D", "teacherId": 1 },
+    { "id": 105, "name": "Class E", "teacherId": 2 }
+  ]
+}
