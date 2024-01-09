@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import { StatusBar } from 'expo-status-bar';
-import HorizontalScroll from './HorizontalScroll';
-import Student from './Student';
+
 
 export default function Teacher() {
   const navigation = useNavigation();

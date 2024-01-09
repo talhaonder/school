@@ -7,13 +7,16 @@ const teachers = getTeachers();
 const classes = getClasses();
 
 const ContentView = ({ selectedTeacher }) => {
+  // Seçilen öğretmenin sınıflarını alın
+  const teacherClasses = selectedTeacher ? classes.filter((cls) => cls.teacherId === selectedTeacher.id) : [];
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaViewContainer}>
         <View style={styles.first}>
           <View style={styles.firstsc}>
             {/* firstsc içindeki buton */}
-            <TouchableOpacity style={styles.buttons} onPress={() => navigation.navigate('Student')}>
+            <TouchableOpacity style={styles.buttons}>
             </TouchableOpacity>
           </View>
         </View>
@@ -32,18 +35,19 @@ const ContentView = ({ selectedTeacher }) => {
               }}
               horizontal
             >
-              {/* İçerik buraya ekleyin */}
-              <TouchableOpacity>
-                <Text>Horizontal Content</Text>
-              </TouchableOpacity>
-              {/* İçerik eklemeye devam edin */}
+              {/* Seçilen öğretmenin sınıflarını listele */}
+              {teacherClasses.map((cls) => (
+                <TouchableOpacity key={cls.id} style={styles.classItem}>
+                  <Text>{cls.name}</Text>
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </View>
         </View>
       </SafeAreaView>
     </View>
   );
-};
+}
 
 const TeacherMenu = ({ onSelectTeacher }) => {
   const handleMenuItemClick = (teacher) => {
@@ -184,6 +188,10 @@ const styles = StyleSheet.create({
   teacherName: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  classItem: {
+    padding: 10,
+    marginRight: 10,
   },
 });
 
