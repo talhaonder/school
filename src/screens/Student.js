@@ -1,33 +1,51 @@
+// React ve gerekli bileşenleri içe aktar
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
+
+// Dışarıdan alınan özel bileşenleri içe aktar
 import SideMenu from 'react-native-side-menu';
 import { getTeachers, getClasses } from '../../components/index';
 
+// Öğretmen ve sınıf verilerini al
 const teachers = getTeachers();
 const classes = getClasses();
 
+// Ana içerik bileşeni
 const ContentView = ({ selectedTeacher }) => {
   // Seçilen öğretmenin sınıflarını alın
-  const teacherClasses = selectedTeacher ? classes.filter((cls) => cls.teacherId === selectedTeacher.id) : [];
+  const teacherClasses = selectedTeacher
+    ? classes.filter((cls) => cls.teacherId === selectedTeacher.id)
+    : [];
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaViewContainer}>
+        {/* Üst bölüm */}
         <View style={styles.first}>
           <View style={styles.firstsc}>
             {/* firstsc içindeki buton */}
-            <TouchableOpacity style={styles.buttons}>
-            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttons}></TouchableOpacity>
           </View>
         </View>
+
+        {/* Alt bölüm */}
         <View style={styles.second}>
           <View style={styles.secondfirst}>
+            {/* Seçilen öğretmenin adını göster */}
             {selectedTeacher && selectedTeacher.name && (
               <Text style={styles.teacherName}>{selectedTeacher.name}</Text>
             )}
           </View>
           <View style={styles.secondscd}>
-            {/* HorizontalScroll yerine doğrudan içeriği ekleyin */}
+            {/* Yatay kaydırmayı içeren ScrollView */}
             <ScrollView
               contentContainerStyle={{
                 flexGrow: 1,
@@ -47,18 +65,18 @@ const ContentView = ({ selectedTeacher }) => {
       </SafeAreaView>
     </View>
   );
-}
+};
 
+// Öğretmen menüsü bileşeni
 const TeacherMenu = ({ onSelectTeacher }) => {
+  // Menü öğelerine tıklanınca işlem yap
   const handleMenuItemClick = (teacher) => {
     // Seçilen öğretmenin sınıflarını göster
     const teacherClasses = classes.filter((cls) => cls.teacherId === teacher.id);
     const classList = teacherClasses.map((cls) => cls.name).join(', ');
 
-    Alert.alert(
-      `Classes for ${teacher.name}`,
-      classList || 'No classes available.',
-    );
+    // Alert ile sınıf bilgilerini göster
+    Alert.alert(`Classes for ${teacher.name}`, classList || 'No classes available.');
 
     // Seçilen öğretmeni ana bileşene iletilmek üzere onSelectTeacher fonksiyonu aracılığıyla iletilir
     onSelectTeacher(teacher);
@@ -66,6 +84,7 @@ const TeacherMenu = ({ onSelectTeacher }) => {
 
   return (
     <View style={styles.menuContainer}>
+      {/* Öğretmenleri listele */}
       {teachers.map((teacher) => (
         <TouchableOpacity key={teacher.id} onPress={() => handleMenuItemClick(teacher)}>
           <Text style={styles.menuItem}>{teacher.name}</Text>
@@ -75,26 +94,33 @@ const TeacherMenu = ({ onSelectTeacher }) => {
   );
 };
 
+// Genel Menü bileşeni
 const Menu = ({ onSelectTeacher }) => {
   return <TeacherMenu onSelectTeacher={onSelectTeacher} />;
 };
 
+// Uygulama ana bileşeni
 const Application = () => {
+  // Seçilen öğretmeni saklamak için state kullan
   const [selectedTeacher, setSelectedTeacher] = useState(null);
 
+  // Öğretmen seçildiğinde yapılacak işlem
   const handleSelectTeacher = (teacher) => {
     setSelectedTeacher(teacher);
   };
 
+  // Menü bileşenini oluştur
   const menu = <Menu onSelectTeacher={handleSelectTeacher} />;
 
   return (
+    // SideMenu bileşeni içinde içerik ve menüyü birleştir
     <SideMenu menu={menu}>
       <ContentView selectedTeacher={selectedTeacher} />
     </SideMenu>
   );
 };
 
+// Stil tanımlamaları
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -196,3 +222,4 @@ const styles = StyleSheet.create({
 });
 
 export default Application;
+// Bileşeni dışa aktar
