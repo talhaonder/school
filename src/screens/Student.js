@@ -1,47 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-const SecondScreen = ({ route }) => {
-  const { cevaplar } = route.params; // İlk ekrandan gelen cevapları al
-  const navigation = useNavigation();
+const SecondScreen = () => {
+  const route = useRoute();
+  const { cevaplar, userName } = route.params;
+  console.log(route.params); // Parametreleri konsol ekranında görüntüle
+  const scrollContentWidth = 600; // BarChart'ın genişliği
 
-  // Grafik için verileri hazırla
-  const data = {
-    labels: ['Soru 1', 'Soru 2', 'Soru 3', 'Soru 4', 'Soru 5', 'Soru 6', 'Soru 7', 'Soru 8', 'Soru 9', 'Soru 10'],
-    datasets: [
+  const surveyQuestions = [
+    {
+      question: "Soru 1: Sosyal medya kullanımının günlük yaşantınıza etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 2: Sosyal medyada geçirdiğiniz zamanın genel mutluluğunuza etkisi nasıl?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 3: Sosyal medyada karşılaştığınız içeriklerin özgüveninize etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 4: Sosyal medya platformlarının sosyal ilişkilerinize etkisi nasıl?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 5: Sosyal medyada gördüğünüz olumsuz içeriklerin duygusal sağlığınıza etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 6: En çok kullandığınız sosyal medya platformu?",
+      options: ["Instagram", "X", "Youtube", "Tiktok", "Facebook"],
+    },
+    {
+      question: "Soru 7: Sosyal medyadaki haber akışının dünya görüşünüzü nasıl şekillendirdiğini düşünüyorsunuz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 8: Sosyal medyada gerçekleşen tartışma ve polemiklerin stres seviyenizi nasıl etkilediğini düşünüyorsunuz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 9: Sosyal medya kullanımının uyku düzeninize olan etkisini nasıl değerlendirirsiniz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
+    },
+    {
+      question: "Soru 10: Sosyal medyada zaman geçirirken, gerçek hayattaki aktivitelerle olan dengeyi nasıl sağlıyorsunuz?",
+      options: ["Çok iyi", "İyi", "Orta", "Kötü", "Çok Kötü"],
+    },
+  ];
+
+  // Her bir soru için ayrı bir veri seti oluştur
+  const dataSets = surveyQuestions.map(({ question, options }, index) => {
+    const labels = options.map((option) => option);
+    const datasets = [
       {
-        data: cevaplar,
+        data: labels.map((label, labelIndex) => (cevaplar[index] === labelIndex ? 1 : 0)),
       },
-    ],
-  };
+    ];
+
+    return {
+      data: {
+        labels,
+        datasets,
+      },
+      question,
+      options,
+    };
+  });
 
   const chartConfig = {
     backgroundGradientFrom: '#ffffff',
     backgroundGradientTo: '#ffffff',
     color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-    strokeWidth: 20,
+    strokeWidth: 1,
   };
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20 }}>Cevaplar Grafiği</Text>
-      <ScrollView horizontal>
-        <BarChart
-          data={data}
-          width={600}
-          height={200}
-          yAxisLabel=""
-          chartConfig={chartConfig}
-        />
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Hoş Geldiniz!</Text>
+      <ScrollView >
+        {dataSets.map(({ data, question, }, index) => (
+          <View key={index} style={{ marginRight: 10 }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>{`${index + 1}. ${question}`}</Text>
+            <ScrollView horizontal>
+              <BarChart
+                data={data}
+                width={scrollContentWidth}
+                height={200}
+                chartConfig={chartConfig}
+              />
+            </ScrollView>
+          </View>
+        ))}
       </ScrollView>
-      <Text
-        style={{ marginTop: 20, color: 'blue', textDecorationLine: 'underline', cursor: 'pointer' }}
-        onPress={() => navigation.navigate('Teacher')}
-      >
-        Geri Dön
-      </Text>
     </SafeAreaView>
   );
 };

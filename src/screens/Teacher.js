@@ -2,138 +2,141 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, Image, ScrollView } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';  // useNavigation eklenmiş
-
+import { useNavigation } from '@react-navigation/native';
 
 export default function Teacher() {
-  const navigation = useNavigation();  // useNavigation hook'u eklenmiş
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState(Array(10).fill(null)); // 10 soru için cevapları saklayan dizi
+  const [answers, setAnswers] = useState(Array(10).fill(null));
   const [cevaplar, setCevaplar] = useState(Array(10).fill(null).map(() => ''));
+  const [selectedItemText, setSelectedItemText] = useState('');
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+  const [userName, setUserName] = useState('');
+  const handleNavigateToStudent = () => {
+    navigation.navigate('Student', { userName });
+  };
 
   const surveyQuestions = [
     {
-      question: "Soru 1: Favori renk nedir?",
-      options: ["Kırmızı", "Mavi", "Yeşil", "Sarı", "Mor"],
+      question: "Soru 1: Sosyal medya kullanımının günlük yaşantınıza etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 2: En sevdiğin film türü nedir?",
-      options: ["Aksiyon", "Komedi", "Dram", "Bilim Kurgu", "Romantik"],
+      question: "Soru 2: Sosyal medyada geçirdiğiniz zamanın genel mutluluğunuza etkisi nasıl?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 3: Hangi sporu yapmayı tercih edersin?",
-      options: ["Futbol", "Basketbol", "Yüzme", "Tenis", "Voleybol"],
+      question: "Soru 3: Sosyal medyada karşılaştığınız içeriklerin özgüveninize etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 4: En sevdiğin yemek nedir?",
-      options: ["Pizza", "Hamburger", "Salata", "Kebap", "Pasta"],
+      question: "Soru 4: Sosyal medya platformlarının sosyal ilişkilerinize etkisi nasıl?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 5: Hangi kitabı en son okudun?",
-      options: ["Harry Potter", "Dune", "1984", "Küçük Prens", "Suç ve Ceza"],
+      question: "Soru 5: Sosyal medyada gördüğünüz olumsuz içeriklerin duygusal sağlığınıza etkisi nedir?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 6: Favori tatil yeri neresidir?",
-      options: ["Plaj", "Dağlar", "Şehir", "Orman", "Tarihi Yerler"],
+      question: "Soru 6: En çok kullandığınız sosyal medya platformu?",
+      options: ["Instagram", "X", "Youtube", "Tiktok", "Facebook"],
     },
     {
-      question: "Soru 7: En sevdiğin müzik türü nedir?",
-      options: ["Pop", "Rock", "Rap", "Klasik", "Country"],
+      question: "Soru 7: Sosyal medyadaki haber akışının dünya görüşünüzü nasıl şekillendirdiğini düşünüyorsunuz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 8: Hangi hayvanı seversin?",
-      options: ["Köpek", "Kedi", "Kuş", "At", "Balık"],
+      question: "Soru 8: Sosyal medyada gerçekleşen tartışma ve polemiklerin stres seviyenizi nasıl etkilediğini düşünüyorsunuz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 9: Hangi aktiviteyi yapmayı tercih edersin?",
-      options: ["Yürüyüş", "Bisiklet", "Kamp", "Sinema", "Alışveriş"],
+      question: "Soru 9: Sosyal medya kullanımının uyku düzeninize olan etkisini nasıl değerlendirirsiniz?",
+      options: ["Çok olumlu", "Olumlu", "Nötr", "Olumsuz", "Çok olumsuz"],
     },
     {
-      question: "Soru 10: En sevdiğin meyve nedir?",
-      options: ["Elma", "Muz", "Üzüm", "Portakal", "Çilek"],
+      question: "Soru 10: Sosyal medyada zaman geçirirken, gerçek hayattaki aktivitelerle olan dengeyi nasıl sağlıyorsunuz?",
+      options: ["Çok iyi", "İyi", "Orta", "Kötü", "Çok Kötü"],
     },
   ];
 
   useEffect(() => {
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 5000);
 
     return () => clearTimeout(delay);
   }, []);
 
-  const handleAnswer = (optionIndex) => {
+  const handleAnswer = (optionIndex, optionText, questionIndex) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestionIndex] = optionIndex;
+    newAnswers[questionIndex] = optionIndex;
     setAnswers(newAnswers);
 
     const newCevaplar = [...cevaplar];
-    newCevaplar[currentQuestionIndex] = String.fromCharCode('A'.charCodeAt(0) + optionIndex);
+    newCevaplar[questionIndex] = String.fromCharCode('A'.charCodeAt(0) + optionIndex);
     setCevaplar(newCevaplar);
-
-    if (currentQuestionIndex < surveyQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (questionIndex < surveyQuestions.length - 1) {
+      // Eğer mevcut soru son soru değilse bir sonraki soruya otomatik geçiş yap
+      setCurrentQuestionIndex(questionIndex + 1);
     }
+
+    setSelectedItemText(optionText); // Tıklanan şıkkın metni
+    setSelectedOptionIndex(optionIndex);
+    <View style={styles.secondfirst}>
+      {renderQuestionOptions(surveyQuestions[currentQuestionIndex], currentQuestionIndex)}
+      <Text style={{ marginTop: 10, color: 'blue' }}>
+        {selectedOptionIndex !== null && `Seçilen Şık: ${String.fromCharCode('A'.charCodeAt(0) + selectedOptionIndex)}`}
+      </Text>
+      <TouchableOpacity onPress={() => currentQuestionIndex > 0 && setCurrentQuestionIndex(currentQuestionIndex - 1)}>
+        <Text style={{ marginTop: 10, color: currentQuestionIndex === 0 ? 'gray' : 'blue' }}>Geri Dön</Text>
+      </TouchableOpacity>
+    </View>
+  };
+
+  const renderQuestionOptions = (question, index) => {
+    return (
+      <View key={index} style={{ marginBottom: 20 }}>
+        <Text style={styles.soru}>{question.question}</Text>
+        {question.options.map((option, optionIndex) => (
+          <TouchableOpacity
+            key={optionIndex}
+            style={{
+              marginVertical: 10,
+              backgroundColor: answers[index] === optionIndex ? 'lightblue' : 'transparent',
+            }}
+            onPress={() => handleAnswer(optionIndex, option, index)}
+          >
+            <Text style={styles.menu}>{option}</Text>
+          </TouchableOpacity>
+        ))}
+        {currentQuestionIndex > 0 && (
+          <TouchableOpacity onPress={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}>
+            <Text style={{ marginTop: 10, color: 'blue' }}>Geri Dön</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <StatusBar />
-      <Image
-        blurRadius={12}
-        source={require('../../assets/indir.jpeg')}
-        style={{ position: 'absolute', height: '100%', width: '100%' }}
-      />
+      <Image blurRadius={6} source={require('../../assets/abant-izzet-baysal-universitesi-logo-B7618646A0-seeklogo.com.png')} style={{ position: 'absolute', height: 350, width: 350 }} />
       {loading ? (
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-          <Progress.CircleSnail thickness={10} size={140} color={"#0bb3b2"} />
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Progress.CircleSnail thickness={10} size={140} color={'#0bb3b2'} />
         </View>
       ) : (
         <SafeAreaView style={styles.container}>
-          <View style={styles.first}>
-            <View style={styles.firstsc}>
-              <TouchableOpacity style={styles.buttons} onPress={() => navigation.navigate('SecondScreen', { cevaplar: answers })}>
-              </TouchableOpacity>
-
-            </View>
-          </View>
           <View style={styles.second}>
-            <View style={styles.secondfirst}>
-              {surveyQuestions.map((item, index) => (
-                <View key={index} style={{ marginBottom: 10, display: index === currentQuestionIndex ? 'flex' : 'none' }}>
-                  <Text>{item.question}</Text>
-                  {item.options.map((option, optionIndex) => (
-                    <TouchableOpacity
-                      key={optionIndex}
-                      style={{ marginVertical: 5, backgroundColor: answers[currentQuestionIndex] === optionIndex ? 'lightblue' : 'transparent' }}
-                      onPress={() => handleAnswer(optionIndex)}
-                    >
-                      <Text style={styles.menu}>{option}</Text>
-                    </TouchableOpacity>
-                  ))}
-                  <TouchableOpacity onPress={() => currentQuestionIndex > 0 && setCurrentQuestionIndex(currentQuestionIndex - 1)}>
-                    <Text style={{ marginTop: 10, color: currentQuestionIndex === 0 ? 'gray' : 'blue' }}>Geri Dön</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-            <View style={styles.secondscd}>
-              <ScrollView
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  flexDirection: 'row',
-                  marginBottom: 20,
-                }}
-                horizontal
-              >
-                {cevaplar.map((cevap, index) => (
-                  <View key={index} style={styles.horizontalContentItem}>
-                    <Text>{`${index + 1}-${cevap}`}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
+            <View style={styles.secondfirst}>{renderQuestionOptions(surveyQuestions[currentQuestionIndex], currentQuestionIndex)}</View>
+
           </View>
+          {currentQuestionIndex === surveyQuestions.length - 1 && (
+              <TouchableOpacity style={styles.buttons} onPress={() => navigation.navigate('SecondScreen', { cevaplar: answers, userName: userName })}>
+              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Grafiğe Git</Text>
+            </TouchableOpacity>
+            )}
         </SafeAreaView>
       )}
     </View>
@@ -151,42 +154,47 @@ const styles = {
     alignItems: "center",
   },
   buttons: {
-    width: 100,
-    backgroundColor: "lightgreen",
-    height: 100,
+    width: 150,
+    marginTop: 15,
+    backgroundColor: "lightblue",
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
     borderBlockColor: "plum",
-    borderWidth: 1,
+    borderRadius: 25,
   },
   first: {
-    borderWidth: 2,
     borderColor: "black",
-    width: 350,
-    height: 150,
+    width: "100%",
+    height: 75,
+    alignItems: "center",
+    justifyContent: "center",
+
   },
   firstsc: {
-    borderWidth: 2,
+    borderRadius: 25,
     borderColor: "black",
-    width: 100,
-    height: 100,
+    width: "auto",
+    height: 50,
     margin: 20
   },
   second: {
-    marginTop: 20,
+    marginTop: 30,
     borderWidth: 2,
     borderColor: "black",
     width: 350,
-    height: 600,
+    height: 510,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "base-line",
+    borderRadius: 25,
   },
   secondfirst: {
-    borderWidth: 2,
     borderColor: "black",
     width: 250,
-    height: 350,
-    marginTop: 30
+    height: 175,
+    marginTop: 30,
+    fontWeight: "bold",
+    fontSize: 18,
   },
   secondscd: {
     display: "flex",
@@ -196,7 +204,7 @@ const styles = {
     borderWidth: 2,
     borderColor: "black",
     width: 250,
-    height: 150,
+    height: 75,
   },
   menu: {
     fontSize: 18,

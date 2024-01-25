@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Teacher from "../src/screens/Teacher";
 import { LogBox, Text, View } from "react-native";
 import SecondScreen from "../src/screens/Student";
-import Menager from "../src/screens/Menager";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +16,7 @@ export default function AppNavigation() {
         <NavigationContainer>
             <Stack.Navigator >
                 <Stack.Screen name="Teacher" options={{headerShown: false}} component={Teacher} />
-                <Stack.Screen name="SecondScreen" component={SecondScreen} />
-                <Stack.Screen name="Menager" options={{headerShown: false}} component={Menager} />
+                <Stack.Screen name="SecondScreen" options={{headerShown: false}} component={SecondScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )
